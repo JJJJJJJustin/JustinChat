@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/images/chat1.png</file>
+        <file>resources/images/chat2.png</file>
+        <file>resources/images/chat3.png</file>
+        <file>resources/images/chat4.png</file>
+    </qresource>
+</RCC>
