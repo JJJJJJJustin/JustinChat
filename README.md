@@ -15,7 +15,7 @@ C++ full stack chat proj which is learned from @恋恋风辰zack (bilibili)
 
 # 查阅笔记
 在 repo 的根目录下，有一个文件夹 ***笔记Notes*** ，其中存放了 .pdf 格式的笔记，查阅时请通过 .pdf 编辑器查看：
-![示例图片](/笔记Notes/img examples/example1.png)
+![演示](笔记Notes/img%20examples/example1.png "img")
 
 # 兴趣是最好的老师
 **“不能等到清晰了以后再去做，不去做久永远清晰不了，在做的过程中才会逐渐清晰起来的。” ——周国平**
