@@ -8,11 +8,19 @@ workspace "GateServer"
         "Release"
     }
 
+    -- 针对 MSVC 工具链启用 /utf-8
+    filter "toolset:msc*"
+        buildoptions { "/utf-8" }
+
+
 project "GateServer"
     location "GateServer"
     kind "ConsoleApp"
     language "C++"
     --cppdialect "C++17"        --C++标准（编译时）
+
+    targetdir ("bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
+    objdir ("bin-int/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
 
     -- 宏定义
     defines
@@ -23,15 +31,16 @@ project "GateServer"
     -- 添加源文件
     files
     {
-        "%{prj.name}/**.h",
-        "%{prj.name}/**.cpp"
+        "%{prj.name}/src/*.h",
+        "%{prj.name}/src/*.cpp"
     }
 
     -- 添加包含目录
     includedirs
     {
         "%{prj.name}/vendor/Boost1_88_0/include",
-        "%{prj.name}/vendor/Jsoncpp_1_9_6/include"
+        "%{prj.name}/vendor/Jsoncpp_1_9_6/include",
+        "%{prj.name}/vendor/Spdlog_1_15_3/include"
     }
 
     -- 添加库目录

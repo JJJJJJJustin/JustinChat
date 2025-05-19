@@ -3,8 +3,13 @@
 #include <json/value.h>
 #include <json/reader.h>
 
+#include "Log.h"
+
 int main()
 {
+    JChat::Log::Init();
+    JC_CORE_WARN("Hello world")
+
     Json::Value root;
     root["id"] = 1001;
     root["data"] = "hello world";

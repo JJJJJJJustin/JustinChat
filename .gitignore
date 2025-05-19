@@ -3,8 +3,8 @@
 /VisualStudioProj/GateServer/script
 
 /VisualStudioProj/GateServer/.vs
-/VisualStudioProj/GateServer/GateServer/bin
-/VisualStudioProj/GateServer/GateServer/obj
+/VisualStudioProj/GateServer/bin
+/VisualStudioProj/GateServer/bin-int
 
 /VisualStudioProj/GateServer/GateServer/GateServer.vcxproj
 /VisualStudioProj/GateServer/GateServer/GateServer.vcxproj.filters
