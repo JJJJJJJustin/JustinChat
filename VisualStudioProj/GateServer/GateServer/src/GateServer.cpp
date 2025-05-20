@@ -1,9 +1,9 @@
-﻿#include <iostream>
+﻿#include "JCpch.h"
+
+#include <iostream>
 #include <json/json.h>
 #include <json/value.h>
 #include <json/reader.h>
-
-#include "Log.h"
 
 int main()
 {

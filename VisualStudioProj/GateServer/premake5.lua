@@ -22,6 +22,9 @@ project "GateServer"
     targetdir ("bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
     objdir ("bin-int/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
 
+    pchheader "JCpch.h"
+    pchsource "%{prj.name}/src/JCpch.cpp"
+
     -- 宏定义
     defines
     {
@@ -31,13 +34,14 @@ project "GateServer"
     -- 添加源文件
     files
     {
-        "%{prj.name}/src/*.h",
-        "%{prj.name}/src/*.cpp"
+        "%{prj.name}/src/**.h",
+        "%{prj.name}/src/**.cpp"
     }
 
     -- 添加包含目录
     includedirs
     {
+        "%{prj.name}/src",
         "%{prj.name}/vendor/Boost1_88_0/include",
         "%{prj.name}/vendor/Jsoncpp_1_9_6/include",
         "%{prj.name}/vendor/Spdlog_1_15_3/include"
@@ -71,11 +75,11 @@ project "GateServer"
 
     -- 运行时库配置
     filter "configurations:Debug"
-        defines { "_DEBUG" }
+        defines { "JC_DEBUG" }
         symbols "On"
         runtime "Debug"  -- 对应 /MDd
 
     filter "configurations:Release"
-        defines { "NDEBUG" }
+        defines { "JC_RELEASE" }
         optimize "On"
         runtime "Release"  -- 对应 /MD

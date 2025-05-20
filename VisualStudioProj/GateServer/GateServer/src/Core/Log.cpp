@@ -1,4 +1,4 @@
-//#include "jcpch.h"
+#include "../JCpch.h"
 #include "Log.h"
 
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -31,5 +31,5 @@ namespace JChat {
 		s_ClientLogger->set_level(spdlog::level::trace);
 		s_ClientLogger->flush_on(spdlog::level::trace);*/
 	}
-	
+
 }
