@@ -1,1 +1,2 @@
-[11:38:57] [warning] JstChat: Hello world
+[16:35:03] [info] JstChat: Justin Chat GataServer is running ...
+[16:35:47] [error] JstChat: Can't find '/Khalil' in GetHandlers, FILE:E:\VS\JustinChat\VisualStudioProj\GateServer\GateServer\src\LogicSystem.cpp

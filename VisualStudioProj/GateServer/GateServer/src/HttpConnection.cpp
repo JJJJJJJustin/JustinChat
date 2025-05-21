@@ -1,5 +1,6 @@
 #include "JCpch.h"
 #include "HttpConnection.h"
+#include "LogicSystem.h"
 
 HttpConnection::HttpConnection(boost::asio::ip::tcp::socket socket)
 	:m_Socket(std::move(socket))
@@ -16,7 +17,10 @@ void HttpConnection::Start()
 			{
 				if(ec)
 				{
-					JC_CORE_ERROR("Http read error is {} \n", ec.what());
+					if(ec == boost::beast::http::error::end_of_stream)
+						JC_CORE_WARN("Connection closed.");
+
+					JC_CORE_WARN("Http read error is {} \n", ec.what());
 					return;
 				}
 
@@ -42,26 +46,27 @@ void HttpConnection::HandleReq()
 	// 处理 GET 请求
 	if (m_Request.method() == boost::beast::http::verb::get)
 	{
-		// 如果请求处理正确，则作出响应（以下代码设置响应格式，以及内容）
-		//bool success = LogicSystem->GetInstance().HandleGet();
+		// 如果检测到对应请求，则进行处理。
+		bool success = LogicSystem::GetInstance()->HandleGet(m_Request.target(), shared_from_this());
 
-		//if (!success)
-		//{
-		//	m_Response.result(http::status::not_found);
-		//	m_Response.set(http::field::content_type, "text/plain");
-		//	boost::beast::ostream(m_Response.body()) << "url not found \r\n";
+		if (!success)
+		{
+			m_Response.result(http::status::not_found);
+			m_Response.set(http::field::content_type, "text/plain");
+			boost::beast::ostream(m_Response.body()) << "url not found \r\n";
 
-		//	// 将 m_Reponse 的内容写入当前连接的 socket 中，并在函数中终止 socket 的发送端，表示发送完毕
-		//	WriteResponse();
+			// 将 m_Reponse 的内容写入当前连接的 socket 中，并在函数中终止 socket 的发送端，表示发送完毕
+			WriteResponse();
 
-		//	return;
-		//}
+			return;
+		}
 
-		//m_Response.result(http::status::ok);
-		//m_Response.set(http::field::server, "GateServer");
-		//WriteResponse();
+		// 如果处理正确，则作出响应（以下代码设置响应格式，以及内容）
+		m_Response.result(http::status::ok);
+		m_Response.set(http::field::server, "GateServer");
+		WriteResponse();
 
-		//return;
+		return;
 	}
 }
 
@@ -84,8 +89,10 @@ void HttpConnection::CheckDeadline()
 	auto self = shared_from_this();
 	m_Deadline.async_wait([self](boost::beast::error_code ec) 
 		{
+			// m_Socket 是 服务器 在接受 客户端 连接后创建的套接字，代表服务器与 单个客户端 的通信通道
+			// m_Socket.close(ec); 表示服务器主动关闭与当前客户端的连接
 			if (!ec)
-				self->m_Socket.close(ec);
+				self->m_Socket.close(ec);						
 		}
 	);
 }

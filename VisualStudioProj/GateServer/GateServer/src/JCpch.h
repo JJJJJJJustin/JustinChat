@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory.h>
 #include <unordered_map>
+#include <functional>
 
 #include <boost/beast/http.hpp>
 #include <boost/beast.hpp>

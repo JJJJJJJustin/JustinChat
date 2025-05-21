@@ -5,19 +5,40 @@
 #include <json/value.h>
 #include <json/reader.h>
 
+#include "CServer.h"
+
 int main()
 {
     JChat::Log::Init();
-    JC_CORE_WARN("Hello world")
+    JC_CORE_INFO("Justin Chat GataServer is running ...");
 
-    Json::Value root;
-    root["id"] = 1001;
-    root["data"] = "hello world";
-    std::string request = root.toStyledString();
-    std::cout << "request is " << request << std::endl;
+    try {
+        boost::asio::io_context iocontext{ 1 };
+        unsigned short port = static_cast<unsigned short>(8080);
+        boost::asio::signal_set signals(iocontext, SIGINT, SIGTERM);
 
-    Json::Value root2;
-    Json::Reader reader;
-    reader.parse(request, root2);
-    std::cout << "msg id is " << root2["id"] << " msg is " << root2["data"] << std::endl;
+        signals.async_wait([&iocontext](const boost::system::error_code& ec, int signalNumber)
+            {
+                if (ec) {
+                    JC_CORE_ERROR("{}, in {}", ec.what(), __FILE__);
+                    return;
+                }
+                else
+                {
+                    iocontext.stop();
+                }
+            }
+        );
+
+        std::shared_ptr<CServer> cs = std::make_shared<CServer>(iocontext, port);
+        cs->Start();
+        iocontext.run();
+    }
+    catch(std::exception& ex)
+    {
+        JC_CORE_CRITICAL("{}", ex.what());
+        return EXIT_FAILURE;
+    }
+
+
 }
