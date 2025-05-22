@@ -2,6 +2,73 @@
 #include "HttpConnection.h"
 #include "LogicSystem.h"
 
+namespace Tool
+{
+	unsigned char ToHex(unsigned char x)
+	{
+		return  x > 9 ? x + 55 : x + 48;
+	}
+
+	unsigned char FromHex(unsigned char x)
+	{
+		unsigned char y;
+		if (x >= 'A' && x <= 'F') y = x - 'A' + 10;
+		else if (x >= 'a' && x <= 'f') y = x - 'a' + 10;
+		else if (x >= '0' && x <= '9') y = x - '0';
+		else JC_CORE_ASSERT(false, "The character is not within the legal hexadecimal range.");		// 如果字符不在合法的十六进制范围内，则触发断言
+		
+		return y;
+	}
+
+	std::string UrlEncode(const std::string& str)
+	{
+		std::string strTemp = "";
+		size_t length = str.length();
+		for (size_t i = 0; i < length; i++)
+		{
+			//判断是否仅有数字和字母构成
+			if (isalnum((unsigned char)str[i]) || (str[i] == '-') || (str[i] == '_') || (str[i] == '.') || (str[i] == '~'))
+				strTemp += str[i];
+			else if (str[i] == ' ')		//为空字符
+				strTemp += "+";
+			else
+			{
+				//其他字符(中文)需要提前加%并且高四位和低四位分别转为16进制
+				strTemp += '%';
+				strTemp += ToHex((unsigned char)str[i] >> 4);
+				strTemp += ToHex((unsigned char)str[i] & 0x0F);
+			}
+		}
+		return strTemp;
+	}
+
+	std::string UrlDecode(const std::string& str)
+	{
+		std::string strTemp = "";
+		size_t length = str.length();
+		for (size_t i = 0; i < length; i++)
+		{
+			//还原+为空
+			if (str[i] == '+') 
+				strTemp += ' ';
+			//遇到%将后面的两个字符从16进制转为char再拼接
+			else if (str[i] == '%')
+			{
+				assert(i + 2 < length);
+				unsigned char high = FromHex((unsigned char)str[++i]);
+				unsigned char low = FromHex((unsigned char)str[++i]);
+				strTemp += high * 16 + low;
+			}
+			else strTemp += str[i];
+		}
+		return strTemp;
+	}
+
+
+}
+
+
+
 HttpConnection::HttpConnection(boost::asio::ip::tcp::socket socket)
 	:m_Socket(std::move(socket))
 {
@@ -46,8 +113,9 @@ void HttpConnection::HandleReq()
 	// 处理 GET 请求
 	if (m_Request.method() == boost::beast::http::verb::get)
 	{
+		PreParseGetParam();							// 解析 URL （包括后续可能出现的参数）
 		// 如果检测到对应请求，则进行处理。
-		bool success = LogicSystem::GetInstance()->HandleGet(m_Request.target(), shared_from_this());
+		bool success = LogicSystem::GetInstance()->HandleGet(m_GetUrl, shared_from_this());
 
 		if (!success)
 		{
@@ -96,3 +164,49 @@ void HttpConnection::CheckDeadline()
 		}
 	);
 }
+
+void HttpConnection::PreParseGetParam()
+{
+	// 提取 URI  
+	auto uri = m_Request.target();
+
+	// 查找查询字符串的开始位置（即 '?' 的位置）  
+	auto queryPos = uri.find('?');
+	if (queryPos == std::string::npos)
+	{
+		m_GetUrl = uri;							// 这里处理得到的 m_GetUrl 即先前 m_Request.target() 
+		return;
+	}
+
+	m_GetUrl = uri.substr(0, queryPos);
+	std::string queryString = uri.substr(queryPos + 1);
+	std::string key, value;
+	size_t pos = 0;
+
+	while ((pos = queryString.find('&')) != std::string::npos) 
+	{
+		auto pair = queryString.substr(0, pos);
+		size_t eqPos = pair.find('=');
+		if (eqPos != std::string::npos) 
+		{
+			key = Tool::UrlDecode(pair.substr(0, eqPos));				// 假设有 url_decode 函数来处理URL解码  
+			value = Tool::UrlDecode(pair.substr(eqPos + 1));
+			m_GetParams[key] = value;
+		}
+		queryString.erase(0, pos + 1);
+	}
+
+	// 处理最后一个参数对（如果没有 & 分隔符）  
+	if (!queryString.empty()) 
+	{
+		size_t eqPos = queryString.find('=');
+		if (eqPos != std::string::npos) 
+		{
+			key = Tool::UrlDecode(queryString.substr(0, eqPos));
+			value = Tool::UrlDecode(queryString.substr(eqPos + 1));
+			m_GetParams[key] = value;
+		}
+	}
+}
+
+

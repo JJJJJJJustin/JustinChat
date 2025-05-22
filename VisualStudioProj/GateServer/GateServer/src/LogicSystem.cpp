@@ -9,14 +9,30 @@ LogicSystem::LogicSystem()
 	// "/get_test" 表示客户发出请求的网址是 http://localhost:8080/get_test 
 	RegGet("/get_test", [](std::shared_ptr<HttpConnection> connection)
 		{
-			boost::beast::ostream(connection->m_Response.body()) << "Recevie get_test request :-)";
+			boost::beast::ostream(connection->m_Response.body()) << "Recevie get_test request :-) \n";
+
+			int i = 0;
+			for (auto& elem : connection->m_GetParams) 
+			{
+				i++;
+				beast::ostream(connection->m_Response.body()) << "param" << i << " key is " << elem.first;
+				beast::ostream(connection->m_Response.body()) << ", " << " value is " << elem.second << std::endl;
+			}
 		}
 	);
 
 	// "/" 表示客户发出请求的网址是 http://localhost:8080/
 	RegGet("/", [](std::shared_ptr<HttpConnection> connection)
 		{
-			boost::beast::ostream(connection->m_Response.body()) << "Haha Ha HHHa";
+			boost::beast::ostream(connection->m_Response.body()) << "Haha Ha HHHa \n";
+
+			int i = 0;
+			for (auto& elem : connection->m_GetParams) 
+			{
+				i++;
+				beast::ostream(connection->m_Response.body()) << "param" << i << " key is " << elem.first;
+				beast::ostream(connection->m_Response.body()) << ", " << " value is " << elem.second << std::endl;
+			}
 		}
 	);
 }

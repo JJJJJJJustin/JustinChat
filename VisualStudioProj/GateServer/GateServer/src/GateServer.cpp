@@ -20,7 +20,7 @@ int main()
         signals.async_wait([&iocontext](const boost::system::error_code& ec, int signalNumber)
             {
                 if (ec) {
-                    JC_CORE_ERROR("{}, in {}", ec.what(), __FILE__);
+                    JC_CORE_ERROR("{}, in {}\n", ec.what(), __FILE__);
                     return;
                 }
                 else
@@ -32,11 +32,12 @@ int main()
 
         std::shared_ptr<CServer> cs = std::make_shared<CServer>(iocontext, port);
         cs->Start();
+        JC_CORE_INFO("Justin Chat listening on port : {}\n", port);
         iocontext.run();
     }
     catch(std::exception& ex)
     {
-        JC_CORE_CRITICAL("{}", ex.what());
+        JC_CORE_CRITICAL("Justin Chat has been terminated -> message: {}\n", ex.what());
         return EXIT_FAILURE;
     }
 
