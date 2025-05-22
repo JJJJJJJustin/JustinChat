@@ -1,10 +1,17 @@
-[16:28:02] [info] JstChat: Justin Chat GataServer is running ...
-[16:28:02] [info] JstChat: Justin Chat listening on port : 8080
+[17:51:28] [info] JstChat: Justin Chat GataServer is running ...
+[17:51:28] [info] JstChat: Justin Chat listening on port : 8080
 
-[16:28:13] [info] JstChat: Receive body is {
-    "email": "123@qq.com"
+[17:53:03] [info] JstChat: Receive body is {
+    "email": "12@qq.com"
 }
 
 
-[16:28:13] [info] JstChat: Handling email: 123@qq.com...
+[17:53:03] [info] JstChat: Handling email: 12@qq.com...
+
+[17:53:20] [info] JstChat: Receive body is {
+    "email": "12@q.com"
+}
+
+
+[17:53:20] [info] JstChat: Handling email: 12@q.com...
 

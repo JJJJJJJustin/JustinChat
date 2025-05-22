@@ -6,6 +6,7 @@
 #include <functional>
 #include <QString>
 #include <QSettings>
+#include <QDir>
 #include <memory>
 #include <mutex>
 #include <iostream>

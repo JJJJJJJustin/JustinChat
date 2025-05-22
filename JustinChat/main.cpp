@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     // 读取 config.ini 并设置 gateUrlPrefix
     QString appPath = QCoreApplication::applicationDirPath();
     QString fileName = "config.ini";
-    QString configPath = appPath + fileName;
+    QString configPath = QDir::toNativeSeparators(appPath + QDir::separator() + fileName);
 
     QSettings settings(configPath, QSettings::IniFormat);
     QString gateHost = settings.value("GateServer/host").toString();
