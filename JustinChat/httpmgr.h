@@ -17,11 +17,12 @@ class HttpMgr : public QObject, public Singleton<HttpMgr>, public std::enable_sh
 
 public:
     ~HttpMgr();
+
+    void PostHttpReq(QUrl url, QJsonObject jsonObj, ReqID reqID, Module mod);
 private:
     friend class Singleton<HttpMgr>;
     HttpMgr();
 
-    void PostHttpReq(QUrl url, QJsonObject jsonObj, ReqID reqID, Module mod);
 public slots:
     void SlotHttpFinish(QString res, ReqID reqID, Module mod, ErrorCode errcode);
 signals:

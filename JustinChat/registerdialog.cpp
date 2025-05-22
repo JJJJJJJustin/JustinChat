@@ -34,7 +34,9 @@ void RegisterDialog::on_get_code_clicked()
     bool matchResult = regex.match(emailStr).hasMatch();
     if(matchResult)
     {
-        // Send HTTP code to user
+        QJsonObject jsonObj;
+        jsonObj["email"] = emailStr;
+        HttpMgr::GetInstance()->PostHttpReq(QUrl("http://localhost:8080/get_varifycode"), jsonObj, ReqID::ID_GET_VERIFY_CODE, Module::REGISTER_MOD);
     }
     else
     {

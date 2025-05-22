@@ -1,27 +1,10 @@
-[15:39:13] [info] JstChat: Justin Chat GataServer is running ...
-[15:39:13] [info] JstChat: Justin Chat listening on port : 8080
+[16:28:02] [info] JstChat: Justin Chat GataServer is running ...
+[16:28:02] [info] JstChat: Justin Chat listening on port : 8080
 
-[15:39:17] [info] JstChat: Receive body is {
-    "email": "123456.zz@gmail.com"
+[16:28:13] [info] JstChat: Receive body is {
+    "email": "123@qq.com"
 }
 
-[15:39:17] [info] JstChat: Handling email: 123456.zz@gmail.com...
 
-[15:40:40] [info] JstChat: Receive body is {
-    "email": "123456.zz@gmail.com"
-}
-
-[15:40:40] [info] JstChat: Handling email: 123456.zz@gmail.com...
-
-[15:43:25] [info] JstChat: Receive body is {
-    "email": "123456.zz@gmail.com"
-}
-
-[15:43:25] [info] JstChat: Handling email: 123456.zz@gmail.com...
-
-[15:43:32] [info] JstChat: Receive body is {
-    "email": "123456.zz@gmail.com"
-}
-
-[15:43:32] [info] JstChat: Handling email: 123456.zz@gmail.com...
+[16:28:13] [info] JstChat: Handling email: 123@qq.com...
 
