@@ -107,20 +107,20 @@ void HttpConnection::Start()
 
 void HttpConnection::HandleReq()
 {
-	m_Response.version(m_Request.version());		// 设置版本
-	m_Response.keep_alive(false);					// 设置为短连接（http)
+	m_Response.version(m_Request.version());				// 设置版本
+	m_Response.keep_alive(false);							// 设置为短连接（http)
 
 	// 处理 GET 请求
 	if (m_Request.method() == boost::beast::http::verb::get)
 	{
-		PreParseGetParam();							// 解析 URL （包括后续可能出现的参数）
+		PreParseGetParam();									// 解析 URL （包括后续可能出现的参数）
+
 		// 如果检测到对应请求，则进行处理。
 		bool success = LogicSystem::GetInstance()->HandleGet(m_GetUrl, shared_from_this());
-
 		if (!success)
 		{
 			m_Response.result(http::status::not_found);
-			m_Response.set(http::field::content_type, "text/plain");
+			m_Response.set(http::field::content_type, "text/plain");		// 设置响应体数据格式
 			boost::beast::ostream(m_Response.body()) << "url not found \r\n";
 
 			// 将 m_Reponse 的内容写入当前连接的 socket 中，并在函数中终止 socket 的发送端，表示发送完毕
@@ -131,11 +131,33 @@ void HttpConnection::HandleReq()
 
 		// 如果处理正确，则作出响应（以下代码设置响应格式，以及内容）
 		m_Response.result(http::status::ok);
+		m_Response.set(http::field::content_type, "text/plain");
 		m_Response.set(http::field::server, "GateServer");
 		WriteResponse();
 
 		return;
 	}
+
+	if (m_Request.method() == boost::beast::http::verb::post)
+	{
+		bool success = LogicSystem::GetInstance()->HandlePost(m_Request.target(), shared_from_this());
+		if(!success)
+		{
+			m_Response.set(http::field::content_type, "text/plain");
+			m_Response.result(http::status::not_found);
+			boost::beast::ostream(m_Response.body()) << " Url not found! \r\n";
+			WriteResponse();
+
+			return;
+		}
+
+		m_Response.set(http::field::content_type, "text/json");
+		m_Response.result(http::status::ok);
+		m_Response.set(http::field::server, "GateServer");
+		WriteResponse();
+		return;
+	}
+
 }
 
 
