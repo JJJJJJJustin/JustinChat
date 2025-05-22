@@ -36,7 +36,7 @@ void RegisterDialog::on_get_code_clicked()
     {
         QJsonObject jsonObj;
         jsonObj["email"] = emailStr;
-        HttpMgr::GetInstance()->PostHttpReq(QUrl("http://localhost:8080/get_varifycode"), jsonObj, ReqID::ID_GET_VERIFY_CODE, Module::REGISTER_MOD);
+        HttpMgr::GetInstance()->PostHttpReq(QUrl(gateUrlPrefix + "/get_varifycode"), jsonObj, ReqID::ID_GET_VERIFY_CODE, Module::REGISTER_MOD);
     }
     else
     {

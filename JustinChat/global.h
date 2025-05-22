@@ -4,12 +4,14 @@
 #include <QWidget>
 #include <QRegularExpression>
 #include <functional>
-#include "QStyle"
-
+#include <QString>
 #include <memory>
 #include <mutex>
 #include <iostream>
 
+#include "QStyle"
+
+extern QString gateUrlPrefix;
 extern std::function<void(QWidget*)> refresh;
 
 // 网络请求标识符
