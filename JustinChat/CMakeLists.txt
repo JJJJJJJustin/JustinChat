@@ -55,6 +55,22 @@ endif()
 
 target_link_libraries(JustinChat PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Network)
 
+# 复制 config.ini 到输出目录（仅 Release 模式）
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(CONFIG_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/config.ini")
+    set(CONFIG_DESTINATION "$<TARGET_FILE_DIR:JustinChat>/config.ini")
+
+    add_custom_command(
+        TARGET JustinChat
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+            "${CONFIG_SOURCE}"
+            "${CONFIG_DESTINATION}"
+        COMMENT "Copying config.ini to output directory (Release)"
+        VERBATIM
+    )
+endif()
+
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.

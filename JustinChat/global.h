@@ -5,6 +5,7 @@
 #include <QRegularExpression>
 #include <functional>
 #include <QString>
+#include <QSettings>
 #include <memory>
 #include <mutex>
 #include <iostream>

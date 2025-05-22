@@ -27,8 +27,10 @@ int main(int argc, char *argv[])
     QString fileName = "config.ini";
     QString configPath = appPath + fileName;
 
-    QSettings setting(configPath, QSettings::IniFomat);
-
+    QSettings settings(configPath, QSettings::IniFormat);
+    QString gateHost = settings.value("GateServer/host").toString();
+    QString gatePort = settings.value("GateServer/port").toString();
+    gateUrlPrefix = "http://" + gateHost + ":" + gatePort;
 
     MainWindow w;
     w.show();
