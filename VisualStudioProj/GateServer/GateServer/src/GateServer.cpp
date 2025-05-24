@@ -1,11 +1,10 @@
 ﻿#include "JCpch.h"
 
-#include <iostream>
+#include "CServer.h"
+
 #include <json/json.h>
 #include <json/value.h>
 #include <json/reader.h>
-
-#include "CServer.h"
 
 int main()
 {

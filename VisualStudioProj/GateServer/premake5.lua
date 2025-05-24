@@ -17,7 +17,7 @@ project "GateServer"
     location "GateServer"
     kind "ConsoleApp"
     language "C++"
-    --cppdialect "C++17"        --C++标准（编译时）
+    cppdialect "C++17"        --C++标准（编译时）
 
     targetdir ("bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
     objdir ("bin-int/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
@@ -35,7 +35,9 @@ project "GateServer"
     files
     {
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+        "%{prj.name}/src/**.cc",
+        "%{prj.name}/src/**.proto",
     }
 
     -- 添加包含目录
@@ -44,13 +46,18 @@ project "GateServer"
         "%{prj.name}/src",
         "%{prj.name}/vendor/Boost1_88_0/include",
         "%{prj.name}/vendor/Jsoncpp_1_9_6/include",
-        "%{prj.name}/vendor/Spdlog_1_15_3/include"
+        "%{prj.name}/vendor/Spdlog_1_15_3/include",
+        "%{prj.name}/vendor/grpc/include",
+        "%{prj.name}/vendor/grpc/third_party/abseil-cpp",
+        "%{prj.name}/vendor/grpc/third_party/address_sorting/include",
+        "%{prj.name}/vendor/grpc/third_party/protobuf/src",
+        "%{prj.name}/vendor/grpc/third_party/re2"
     }
 
     -- 添加库目录
     libdirs
     {
-        "%{prj.name}/vendor/Boost1_88_0/lib"
+        "%{prj.name}/vendor/Boost1_88_0/lib",
     }
 
     -- 在 Debug 和 Release 配置同样的链接库
@@ -60,11 +67,116 @@ project "GateServer"
 
     -- 对于 jsoncpp 需要动态设置库目录和链接库（因为二者有 debug 和 release 不同环境下的运行库）
     filter "configurations:Debug"
+        -- Debug 模式下的附件库目录(目前我们只生成了 jsoncpp 和 grpc 在 Debug 模式下的库，如果需要 Release 版本的库，需要外部编译生成，然后在脚本中添加)
         libdirs
         {
-            "%{prj.name}/vendor/Jsoncpp_1_9_6/lib/Debug"  -- Debug 库路径
+            "%{prj.name}/vendor/Jsoncpp_1_9_6/lib/Debug",
+
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/re2/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/types/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/synchronization/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/status/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/random/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/flags/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/debugging/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/container/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/hash/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/boringssl-with-bazel/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/numeric/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/time/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/base/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/strings/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/profiling/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/protobuf/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/zlib/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/cares/cares/lib/Debug"
         }
-        links { "jsoncppd.lib" }  -- Debug 库
+        
+        links       -- Debug 模式下的附加依赖项
+        { 
+            "jsoncppd.lib",
+            "libprotobufd.lib",
+            "gpr.lib",
+            "grpc.lib",
+            "grpc++.lib",
+            "grpc++_reflection.lib",
+            "address_sorting.lib",
+            "ws2_32.lib",
+            "cares.lib",
+            "zlibstaticd.lib",
+            "upb_base_lib.lib",
+            "upb_hash_lib.lib",
+            "upb_json_lib.lib",       -- 注意：检查文件名是否实际为 upb_json_lib.lib
+            "upb_lex_lib.lib",
+            "upb_mem_lib.lib",
+            "upb_message_lib.lib",
+            "upb_mini_descriptor_lib.lib",
+            "upb_mini_table_lib.lib",
+            "upb_reflection_lib.lib",
+            "upb_textformat_lib.lib",
+            "upb_wire_lib.lib",
+            "ssl.lib",
+            "crypto.lib",
+            "absl_bad_any_cast_impl.lib",
+            "absl_bad_optional_access.lib",
+            "absl_bad_variant_access.lib",
+            "absl_base.lib",
+            "absl_city.lib",
+            "absl_civil_time.lib",
+            "absl_cord.lib",
+            "absl_debugging_internal.lib",
+            "absl_demangle_internal.lib",
+            "absl_examine_stack.lib",
+            "absl_exponential_biased.lib",
+            "absl_failure_signal_handler.lib",
+            "absl_flags_commandlineflag.lib",
+            "absl_flags_commandlineflag_internal.lib",
+            "absl_flags_config.lib",
+            "absl_flags_internal.lib",
+            "absl_flags_marshalling.lib",
+            "absl_flags_parse.lib",
+            "absl_flags_private_handle_accessor.lib",
+            "absl_flags_program_name.lib",
+            "absl_flags_reflection.lib",
+            "absl_flags_usage.lib",
+            "absl_flags_usage_internal.lib",
+            "absl_graphcycles_internal.lib",
+            "absl_hash.lib",
+            "absl_hashtablez_sampler.lib",
+            "absl_int128.lib",
+            "absl_leak_check.lib",
+            --"absl_leak_check_disable.lib",        --这个库好像 abseli 已经不支持了
+            "absl_log_severity.lib",
+            "absl_malloc_internal.lib",
+            "absl_periodic_sampler.lib",
+            "absl_random_distributions.lib",
+            "absl_random_internal_distribution_test_util.lib",
+            "absl_random_internal_pool_urbg.lib",
+            "absl_random_internal_randen.lib",
+            "absl_random_internal_randen_hwaes.lib",
+            "absl_random_internal_randen_hwaes_impl.lib",
+            "absl_random_internal_randen_slow.lib",
+            "absl_random_internal_seed_material.lib",
+            "absl_random_seed_gen_exception.lib",
+            "absl_random_seed_sequences.lib",
+            "absl_raw_hash_set.lib",
+            "absl_raw_logging_internal.lib",
+            "absl_scoped_set_env.lib",
+            "absl_spinlock_wait.lib",
+            "absl_stacktrace.lib",
+            "absl_status.lib",
+            "absl_strings.lib",
+            "absl_strings_internal.lib",
+            "absl_str_format_internal.lib",
+            "absl_symbolize.lib",
+            "absl_synchronization.lib",
+            "absl_throw_delegate.lib",
+            "absl_time.lib",
+            "absl_time_zone.lib",
+            "absl_statusor.lib",
+            "re2.lib"
+        }  
 
     filter "configurations:Release"
         libdirs
