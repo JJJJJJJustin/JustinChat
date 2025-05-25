@@ -37,7 +37,10 @@ project "GateServer"
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp",
         "%{prj.name}/src/**.cc",
-        "%{prj.name}/src/**.proto",
+
+        "%{prj.name}/src/**.grpc.pb.cc",
+        "%{prj.name}/src/**.pb.cc",
+        "%{prj.name}/src/**.proto"
     }
 
     -- 添加包含目录
@@ -72,31 +75,35 @@ project "GateServer"
         {
             "%{prj.name}/vendor/Jsoncpp_1_9_6/lib/Debug",
 
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/re2/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/types/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/synchronization/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/status/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/random/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/flags/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/debugging/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/container/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/hash/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/boringssl-with-bazel/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/numeric/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/time/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/base/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/strings/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/profiling/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/protobuf/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/zlib/Debug",
             "%{prj.name}/vendor/grpc/visual_pro/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/cares/cares/lib/Debug"
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/re2/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/base/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/container/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/crc/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/debugging/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/flags/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/hash/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/log/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/numeric/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/profiling/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/random/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/status/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/strings/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/synchronization/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/types/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/abseil-cpp/absl/time/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/boringssl-with-bazel/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/cares/cares/lib/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/protobuf/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/protobuf/third_party/utf8_range/Debug",
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/zlib/Debug"
         }
         
         links       -- Debug 模式下的附加依赖项
         { 
             "jsoncppd.lib",
             "libprotobufd.lib",
+
             "gpr.lib",
             "grpc.lib",
             "grpc++.lib",
@@ -125,6 +132,20 @@ project "GateServer"
             "absl_city.lib",
             "absl_civil_time.lib",
             "absl_cord.lib",
+            "absl_cord_internal.lib",
+            "absl_cordz_functions.lib",
+            "absl_cordz_handle.lib",
+            "absl_cordz_info.lib",
+            "absl_cordz_sample_token.lib",
+            "absl_crc32c.lib",
+            "absl_crc_cord_state.lib",
+            "absl_crc_internal.lib",
+            "absl_hash.lib",
+            "absl_str_format_internal.lib",
+            "absl_strings.lib",
+            "absl_string_view.lib",
+            "absl_strings.lib",
+            "absl_strings_internal.lib",
             "absl_debugging_internal.lib",
             "absl_demangle_internal.lib",
             "absl_examine_stack.lib",
@@ -145,13 +166,32 @@ project "GateServer"
             "absl_hash.lib",
             "absl_hashtablez_sampler.lib",
             "absl_int128.lib",
+            "absl_kernel_timeout_internal.lib",
             "absl_leak_check.lib",
             --"absl_leak_check_disable.lib",        --这个库好像 abseli 已经不支持了
-            "absl_log_severity.lib",
+            "absl_log_entry.lib",
+            "absl_log_flags.lib",
+            "absl_log_globals.lib",
+            "absl_log_initialize.lib",
+            "absl_log_internal_check_op.lib", 
+            "absl_log_internal_conditions.lib",
+            "absl_log_internal_fnmatch.lib",
+            "absl_log_internal_format.lib",
+            "absl_log_internal_globals.lib",
+            "absl_log_internal_log_sink_set.lib",
+            "absl_log_internal_message.lib",
+            "absl_log_internal_nullguard.lib",
+            "absl_log_internal_proto.lib",
+            "absl_log_internal_structured_proto.lib",
+            "absl_log_severity.lib",                -- 这个库好像也不支持了
+            "absl_log_sink.lib",
+            "absl_low_level_hash.lib",
+            "absl_vlog_config_internal.lib",
             "absl_malloc_internal.lib",
             "absl_periodic_sampler.lib",
             "absl_random_distributions.lib",
             "absl_random_internal_distribution_test_util.lib",
+            "absl_random_internal_platform.lib",
             "absl_random_internal_pool_urbg.lib",
             "absl_random_internal_randen.lib",
             "absl_random_internal_randen_hwaes.lib",
@@ -166,6 +206,7 @@ project "GateServer"
             "absl_spinlock_wait.lib",
             "absl_stacktrace.lib",
             "absl_status.lib",
+            "absl_strerror.lib",
             "absl_strings.lib",
             "absl_strings_internal.lib",
             "absl_str_format_internal.lib",
@@ -175,8 +216,15 @@ project "GateServer"
             "absl_time.lib",
             "absl_time_zone.lib",
             "absl_statusor.lib",
+            "libutf8_range.lib",
+            "libutf8_validity.lib",
             "re2.lib"
-        }  
+        }
+
+        -- buildoptions {
+        --     "/GR",  -- 启用 RTTI
+        --     "/EHsc" -- 启用异常
+        -- }
 
     filter "configurations:Release"
         libdirs
