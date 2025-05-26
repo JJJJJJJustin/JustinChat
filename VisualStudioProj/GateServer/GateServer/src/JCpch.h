@@ -30,3 +30,6 @@ enum ErrorCodes
 	Error_Json = 1001,			// Json ½âÎö´íÎó
 	Error_RPC_Failed = 1002		// RPC ÇëÇó´íÎó
 };
+
+class ConfigMgr;
+extern ConfigMgr globalConfigMgr;

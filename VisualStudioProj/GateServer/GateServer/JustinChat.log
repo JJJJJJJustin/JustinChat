@@ -1,3 +1,8 @@
-[21:38:40] [info] JstChat: Justin Chat GataServer is running ...
-[21:38:40] [info] JstChat: Justin Chat listening on port : 8080
+[20:21:56] [info] JstChat: Justin Chat GataServer is running ...
+[20:21:56] [trace] JstChat: Reading config file in: E:\VS\JustinChat\VisualStudioProj\GateServer\GateServer\src/config.ini
+[20:21:56] [info] JstChat: Section Name :GateServer
+[20:21:56] [info] JstChat: 	 Port = 8080
+[20:21:56] [info] JstChat: Section Name :VerifyServer
+[20:21:56] [info] JstChat: 	 Port = 50051
+[20:21:56] [info] JstChat: Justin Chat listening on port : 8080
 

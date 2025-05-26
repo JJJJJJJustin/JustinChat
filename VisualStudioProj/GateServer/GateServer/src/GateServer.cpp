@@ -1,6 +1,6 @@
 ﻿#include "JCpch.h"
-
 #include "CServer.h"
+#include "ConfigMgr.h"
 
 #include <json/json.h>
 #include <json/value.h>
@@ -11,9 +11,12 @@ int main()
     JChat::Log::Init();
     JC_CORE_INFO("Justin Chat GataServer is running ...");
 
+    ConfigMgr globalConfigMgr;
+    std::string GatePortStr = globalConfigMgr["GateServer"]["Port"];
+
     try {
         boost::asio::io_context iocontext{ 1 };
-        unsigned short port = static_cast<unsigned short>(8080);
+        unsigned short port = atoi(GatePortStr.c_str());
         boost::asio::signal_set signals(iocontext, SIGINT, SIGTERM);
 
         signals.async_wait([&iocontext](const boost::system::error_code& ec, int signalNumber)

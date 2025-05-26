@@ -1,6 +1,7 @@
 #include "JCpch.h"
 #include "LogicSystem.h"
 #include "HttpConnection.h"
+#include "VerifyGrpcClient.h"
 
 // Constructor is private
 LogicSystem::LogicSystem()
@@ -54,9 +55,12 @@ LogicSystem::LogicSystem()
 				return true;
 			}
 
-			rspRoot["error"] = ErrorCodes::Success;
-			rspRoot["email"] = reqRoot["email"].asString();
-			JC_CORE_INFO("Handling email: {}...\n", reqRoot["email"].asString());
+			std::string email = reqRoot["email"].asString();;
+			message::GetVerifyRsp rsp = VerifyGrpcClient::GetInstance()->GetVerifyCode(email);
+
+			rspRoot["error"] = rsp.error();
+			rspRoot["email"] = email;
+			JC_CORE_INFO("Handling email: {}...\n", email);
 
 			boost::beast::ostream(connection->m_Response.body()) << rspRoot.toStyledString();
 			return true;
