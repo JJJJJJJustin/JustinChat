@@ -1,8 +1,22 @@
-[20:21:56] [info] JstChat: Justin Chat GataServer is running ...
-[20:21:56] [trace] JstChat: Reading config file in: E:\VS\JustinChat\VisualStudioProj\GateServer\GateServer\src/config.ini
-[20:21:56] [info] JstChat: Section Name :GateServer
-[20:21:56] [info] JstChat: 	 Port = 8080
-[20:21:56] [info] JstChat: Section Name :VerifyServer
-[20:21:56] [info] JstChat: 	 Port = 50051
-[20:21:56] [info] JstChat: Justin Chat listening on port : 8080
+[17:04:14] [info] JstChat: Justin Chat GataServer is running ...
+[17:04:14] [trace] JstChat: Reading config file in: E:\VS\JustinChat\VisualStudioProj\GateServer\GateServer\src/config.ini
+[17:04:14] [info] JstChat: Section Name :GateServer
+[17:04:14] [info] JstChat: 	 Port = 8080
+[17:04:14] [info] JstChat: Section Name :VerifyServer
+[17:04:14] [info] JstChat: 	 Port = 50051
+[17:04:14] [info] JstChat: Justin Chat listening on port : 8080
+
+[17:04:36] [info] JstChat: Receive body is {
+    "email": "3480966311@qq.com"
+}
+
+
+[17:04:37] [info] JstChat: Handling email: 3480966311@qq.com...
+
+[17:11:26] [info] JstChat: Receive body is {
+    "email": "3480966311@qq.com"
+}
+
+
+[17:11:27] [info] JstChat: Handling email: 3480966311@qq.com...
 

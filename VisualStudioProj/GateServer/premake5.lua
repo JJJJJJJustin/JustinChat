@@ -40,7 +40,9 @@ project "GateServer"
 
         "%{prj.name}/src/**.grpc.pb.cc",
         "%{prj.name}/src/**.pb.cc",
-        "%{prj.name}/src/**.proto"
+        "%{prj.name}/src/**.proto",
+
+        "%{prj.name}/src/config.ini"
     }
 
     -- 添加包含目录

@@ -55,7 +55,7 @@ LogicSystem::LogicSystem()
 				return true;
 			}
 
-			std::string email = reqRoot["email"].asString();;
+			std::string email = reqRoot["email"].asString();
 			message::GetVerifyRsp rsp = VerifyGrpcClient::GetInstance()->GetVerifyCode(email);
 
 			rspRoot["error"] = rsp.error();

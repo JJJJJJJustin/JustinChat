@@ -1,14 +1,22 @@
-/VisualStudioProj/GateServer/GateServer/vendor
-/VisualStudioProj/GateServer/vendor
-/VisualStudioProj/GateServer/script
+# 不同步 GateServer 中的文件（lib、include 等等文件）
+/VisualStudioProj/GateServer/GateServer/vendor/Boost1_88_0
+/VisualStudioProj/GateServer/GateServer/vendor/grpc
+/VisualStudioProj/GateServer/GateServer/vendor/Jsoncpp_1_9_6
+/VisualStudioProj/GateServer/GateServer/vendor/Spdlog_1_15_3
 
+# 不同步属性/项目输出文件
 /VisualStudioProj/GateServer/.vs
 /VisualStudioProj/GateServer/bin
 /VisualStudioProj/GateServer/bin-int
 
-/VisualStudioProj/GateServer/GateServer/GateServer.vcxproj
-/VisualStudioProj/GateServer/GateServer/GateServer.vcxproj.filters
-/VisualStudioProj/GateServer/GateServer/GateServer.vcxproj.user
+# 不同步 vs 项目相关文件
 VisualStudioProj/GateServer/GateServer.sln
+/VisualStudioProj/GateServer/GateServer/GateServer.vcxproj
+/VisualStudioProj/GateServer/GateServer/GateServer.vcxproj.user
+/VisualStudioProj/GateServer/GateServer/GateServer.vcxproj.filters
 
+# 不同步 spdlog 库的日志文件
 VisualStudioProj/GateServer/GateServer/JustinChat.log
+
+#不同步 verifyServer 的模块
+/OtherProj/VerifyServer/node_modules
