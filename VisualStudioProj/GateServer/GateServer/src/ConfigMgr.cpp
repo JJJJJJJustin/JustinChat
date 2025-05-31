@@ -4,6 +4,12 @@
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/ini_parser.hpp"
 
+ConfigMgr& ConfigMgr::Inst()
+{
+	static ConfigMgr configMgr;
+	return configMgr;
+}
+
 ConfigMgr::ConfigMgr()
 {
 	boost::filesystem::path currentPath = boost::filesystem::current_path();
@@ -32,11 +38,11 @@ ConfigMgr::ConfigMgr()
 	// For DEBUGING ...
 	for( const auto& i : m_ConfigMap)
 	{
-		JC_CORE_INFO("Section Name :{}", i.first);
+		JC_CORE_TRACE("Section Name :{}", i.first);
 		SectionInfo config = i.second;
 		for( const auto& j : config.m_DataMap)
 		{
-			JC_CORE_INFO("\t {} = {}", j.first, j.second);
+			JC_CORE_TRACE("\t {} = {}", j.first, j.second);
 		}
 	}
 }

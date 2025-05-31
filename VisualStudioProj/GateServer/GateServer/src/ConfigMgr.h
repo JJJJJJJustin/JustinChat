@@ -34,13 +34,11 @@ public:
 };
 
 
-class ConfigMgr
+class ConfigMgr : public Singleton<ConfigMgr>
 {
+	friend class Singleton<ConfigMgr>;
 public:
-	ConfigMgr();
 	~ConfigMgr() { m_ConfigMap.clear(); }
-
-	ConfigMgr(const ConfigMgr& src) { this->m_ConfigMap = src.m_ConfigMap; }
 
 	ConfigMgr& operator= (const ConfigMgr& src)
 	{
@@ -59,6 +57,10 @@ public:
 		return m_ConfigMap[key];
 	}
 
+	static ConfigMgr& Inst();
+private:
+	ConfigMgr();
+	//ConfigMgr(const ConfigMgr& src) { this->m_ConfigMap = src.m_ConfigMap; }
 
 private:
 	std::map<std::string, SectionInfo> m_ConfigMap;

@@ -69,9 +69,10 @@ namespace Tool
 
 
 
-HttpConnection::HttpConnection(boost::asio::ip::tcp::socket socket)
-	:m_Socket(std::move(socket))
+HttpConnection::HttpConnection(boost::asio::io_context& ioc)
+	:m_Socket(ioc)
 {
+
 }
 
 void HttpConnection::Start()

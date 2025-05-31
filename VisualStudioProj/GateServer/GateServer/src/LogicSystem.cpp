@@ -44,7 +44,7 @@ LogicSystem::LogicSystem()
 			Json::Reader reader;
 						
 			auto reqData = boost::beast::buffers_to_string(connection->m_Request.body().data());
-			JC_CORE_INFO("Receive body is {}\n", reqData);
+			JC_CORE_TRACE("Receive body is \n{}\n", reqData);
 			bool success = reader.parse(reqData, reqRoot);
 			if(!success)
 			{
@@ -60,7 +60,7 @@ LogicSystem::LogicSystem()
 
 			rspRoot["error"] = rsp.error();
 			rspRoot["email"] = email;
-			JC_CORE_INFO("Handling email: {}...\n", email);
+			JC_CORE_TRACE("Handling email: {}...\n", email);
 
 			boost::beast::ostream(connection->m_Response.body()) << rspRoot.toStyledString();
 			return true;

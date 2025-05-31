@@ -9,6 +9,5 @@ public:
 private:
 	boost::asio::io_context& m_Context;
 	boost::asio::ip::tcp::acceptor m_Acceptor;
-	boost::asio::ip::tcp::socket m_Socket;
 };
 

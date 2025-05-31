@@ -1,9 +1,10 @@
 #include "JCpch.h"
 #include "CServer.h"
 #include "HttpConnection.h"
+#include "AsioIOServicePool.h"
 
 CServer::CServer(boost::asio::io_context& context, unsigned short& port)
-	:m_Context(context), m_Acceptor(context, boost::asio::ip::tcp::endpoint(tcp::v4(), port)), m_Socket(context)
+	:m_Context(context), m_Acceptor(context, boost::asio::ip::tcp::endpoint(tcp::v4(), port))
 {
 
 }
@@ -11,7 +12,10 @@ CServer::CServer(boost::asio::io_context& context, unsigned short& port)
 void CServer::Start()
 {
 	auto self = shared_from_this();
-	m_Acceptor.async_accept(m_Socket, [self](boost::beast::error_code ec)
+	boost::asio::io_context& ioContext = AsioIOServicePool::GetInstance()->GetIOService();
+	std::shared_ptr<HttpConnection> httpCon = std::make_shared<HttpConnection>(ioContext);
+
+	m_Acceptor.async_accept(httpCon->GetSocket(), [self, httpCon](boost::beast::error_code ec)
 		{
 			try
 			{
@@ -23,7 +27,7 @@ void CServer::Start()
 				}
 
 				// 如果连接正常，则使用 HpptConnection 处理连接
-				std::make_shared<HttpConnection>(std::move(self->m_Socket))->Start();
+				httpCon->Start();
 				self->Start();
 			}
 			catch(std::exception& ex)

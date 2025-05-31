@@ -11,7 +11,7 @@ int main()
     JChat::Log::Init();
     JC_CORE_INFO("Justin Chat GataServer is running ...");
 
-    ConfigMgr globalConfigMgr;
+    ConfigMgr& globalConfigMgr = ConfigMgr::Inst();
     std::string GatePortStr = globalConfigMgr["GateServer"]["Port"];
 
     try {
