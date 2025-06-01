@@ -1,9 +1,13 @@
 #pragma once
 
-#include <iostream>
-#include <memory.h>
-#include <unordered_map>
+#include <atomic>
+#include <condition_variable>
 #include <functional>
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <queue>
+#include <unordered_map>
 
 #include <boost/beast/http.hpp>
 #include <boost/beast.hpp>
