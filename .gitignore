@@ -3,6 +3,9 @@
 /VisualStudioProj/GateServer/GateServer/vendor/grpc
 /VisualStudioProj/GateServer/GateServer/vendor/Jsoncpp_1_9_6
 /VisualStudioProj/GateServer/GateServer/vendor/Spdlog_1_15_3
+/VisualStudioProj/GateServer/GateServer/vendor/redis/include
+/VisualStudioProj/GateServer/GateServer/vendor/redis/lib
+/VisualStudioProj/GateServer/GateServer/vendor/redis/src
 
 # 不同步属性/项目输出文件
 /VisualStudioProj/GateServer/.vs

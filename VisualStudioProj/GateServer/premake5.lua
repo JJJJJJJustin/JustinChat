@@ -52,11 +52,14 @@ project "GateServer"
         "%{prj.name}/vendor/Boost1_88_0/include",
         "%{prj.name}/vendor/Jsoncpp_1_9_6/include",
         "%{prj.name}/vendor/Spdlog_1_15_3/include",
+
         "%{prj.name}/vendor/grpc/include",
         "%{prj.name}/vendor/grpc/third_party/abseil-cpp",
         "%{prj.name}/vendor/grpc/third_party/address_sorting/include",
         "%{prj.name}/vendor/grpc/third_party/protobuf/src",
-        "%{prj.name}/vendor/grpc/third_party/re2"
+        "%{prj.name}/vendor/grpc/third_party/re2",
+
+        "%{prj.name}/vendor/redis/include/hiredis"
     }
 
     -- 添加库目录
@@ -98,7 +101,9 @@ project "GateServer"
             "%{prj.name}/vendor/grpc/visual_pro/third_party/cares/cares/lib/Debug",
             "%{prj.name}/vendor/grpc/visual_pro/third_party/protobuf/Debug",
             "%{prj.name}/vendor/grpc/visual_pro/third_party/protobuf/third_party/utf8_range/Debug",
-            "%{prj.name}/vendor/grpc/visual_pro/third_party/zlib/Debug"
+            "%{prj.name}/vendor/grpc/visual_pro/third_party/zlib/Debug",
+
+            "%{prj.name}/vendor/redis/lib/Debug"
         }
         
         links       -- Debug 模式下的附加依赖项
@@ -220,7 +225,10 @@ project "GateServer"
             "absl_statusor.lib",
             "libutf8_range.lib",
             "libutf8_validity.lib",
-            "re2.lib"
+            "re2.lib",
+
+            "hiredis.lib",
+            "Win32_Interop.lib"
         }
 
         -- buildoptions {
