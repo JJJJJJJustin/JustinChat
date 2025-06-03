@@ -1,15 +1,40 @@
 #pragma once
+// -----------------------------------------------------------------------------
+// --------------------------- Redis 连接池 ------------------------------------
+// -----------------------------------------------------------------------------
+class RedisConPool
+{
+public:
+    RedisConPool(uint32_t size, const char* host, int port, const char* password);
+    ~RedisConPool();
 
-class RedisMgr : public Singleton<RedisMgr>
+    redisContext* GetConnection();
+    void ReturnConnection(redisContext* context);
+private:
+    void Close();
+private:
+    uint32_t m_Size;
+    const char* m_Host;
+    int m_Port;
+
+    std::atomic<bool> b_Stop;
+    std::condition_variable m_Cond;
+    std::mutex m_Mutex;
+
+    std::queue<redisContext*> m_Connections;
+};
+
+// -----------------------------------------------------------------------------
+// -------------------------- Redis 连接管理类 ---------------------------------
+// -----------------------------------------------------------------------------
+class RedisMgr : public Singleton<RedisMgr>//, public std::enable_shared_from_this<RedisMgr>
 {
 	friend class Singleton<RedisMgr>;
 public:
 	~RedisMgr();
 
-    bool Connect(const std::string& host, int port);
     bool Get(const std::string& key, std::string& value);
     bool Set(const std::string& key, const std::string& value);
-    bool Auth(const std::string& password);
 
     bool LPush(const std::string& key, const std::string& value);
     bool LPop(const std::string& key, std::string& value);
@@ -21,11 +46,8 @@ public:
     
     bool Del(const std::string& key);
     bool ExistsKey(const std::string& key);
-
-    void Close();
 private:
-	RedisMgr() = default;
+	RedisMgr();
 private:
-    redisContext* m_Connect;
-    redisReply* m_Reply;
+    std::unique_ptr<RedisConPool> m_Pool;
 };
