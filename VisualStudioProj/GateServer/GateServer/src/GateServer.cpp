@@ -98,28 +98,26 @@
 //
 //}
 
-//void TestRedisMgr() {
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->Connect("127.0.0.1", 6379), "Connect Failed");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->Auth("123456"), "Auth Failed");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->Set("blogwebsite", "llfc.club"), "Set Failed");
-//   std::string value = "";
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->Get("blogwebsite", value), "Get Failed");
-//   JC_CORE_ASSERT((RedisMgr::GetInstance()->Get("nonekey", value) == false), "Get Failed");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->HSet("bloginfo", "blogwebsite", "llfc.club"), "HSet Failed");
-//   JC_CORE_ASSERT((RedisMgr::GetInstance()->HGet("bloginfo", "blogwebsite") != ""), "HGet Failed");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->ExistsKey("bloginfo"), "ExistsKey Not Found");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->Del("bloginfo"), "Del Failed");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->Del("bloginfo"), "Del Failed");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->ExistsKey("bloginfo") == false, "ExistsKey Not Found");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->LPush("lpushkey1", "lpushvalue1"), "LPush Failed");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->LPush("lpushkey1", "lpushvalue2"), "LPush Failed");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->LPush("lpushkey1", "lpushvalue3"), "LPush Failed");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->RPop("lpushkey1", value), "RPop Failed");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->RPop("lpushkey1", value), "RPop Failed");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->LPop("lpushkey1", value), "LPop Failed");
-//   JC_CORE_ASSERT(RedisMgr::GetInstance()->LPop("lpushkey2", value) == false, "LPop Failed");
-//    RedisMgr::GetInstance()->Close();
-//}
+void TestRedisMgr() 
+{
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->Set("blogwebsite", "llfc.club"), "Set Failed");
+   std::string value = "";
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->Get("blogwebsite", value), "Get Failed");
+   JC_CORE_ASSERT((RedisMgr::GetInstance()->Get("nonekey", value) == false), "Get Failed");
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->HSet("bloginfo", "blogwebsite", "llfc.club"), "HSet Failed");
+   JC_CORE_ASSERT((RedisMgr::GetInstance()->HGet("bloginfo", "blogwebsite") != ""), "HGet Failed");
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->ExistsKey("bloginfo"), "ExistsKey Not Found");
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->Del("bloginfo"), "Del Failed");
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->Del("bloginfo"), "Del Failed");
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->ExistsKey("bloginfo") == false, "ExistsKey Not Found");
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->LPush("lpushkey1", "lpushvalue1"), "LPush Failed");
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->LPush("lpushkey1", "lpushvalue2"), "LPush Failed");
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->LPush("lpushkey1", "lpushvalue3"), "LPush Failed");
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->RPop("lpushkey1", value), "RPop Failed");
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->RPop("lpushkey1", value), "RPop Failed");
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->LPop("lpushkey1", value), "LPop Failed");
+   JC_CORE_ASSERT(RedisMgr::GetInstance()->LPop("lpushkey2", value) == false, "LPop Failed");
+}
 
 int main()
 {
@@ -127,7 +125,7 @@ int main()
     JC_CORE_INFO("Justin Chat GataServer is running ...");
     
     //TestRedis();
-    //TestRedisMgr();
+    TestRedisMgr();
 
     ConfigMgr& globalConfigMgr = ConfigMgr::Inst();
     std::string GatePortStr = globalConfigMgr["GateServer"]["Port"];

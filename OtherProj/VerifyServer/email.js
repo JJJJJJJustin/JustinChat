@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 const configModule = require('./config');
 
 // 创建发送邮件的代理
-let transport = nodemailer.createTransport({host:'smtp.163.com', port:465, secure:true, auth:{user:configModule.emailUser, pass:configModule.emailPass}});
+let transport = nodemailer.createTransport({host:'smtp.163.com', port:465, secure:true, auth:{user:configModule.email_User, pass:configModule.email_Pass}});
 
 // 创建发送邮件的函数
 function SendMail(mailOptions)
@@ -14,7 +14,7 @@ function SendMail(mailOptions)
         transport.sendMail(mailOptions, function(error, info)
         {
             if (error) { console.log(error); reject(error); }
-            else { console.log('邮件已经成功发送', info.response); resolve(info.response); }
+            else { console.log('Email.js: 邮件已经成功发送', info.response); resolve(info.response); }
         })
     });
 }

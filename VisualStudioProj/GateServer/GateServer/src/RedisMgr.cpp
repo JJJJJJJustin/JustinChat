@@ -364,7 +364,7 @@ std::string RedisMgr::HGet(const std::string& key, const std::string& hkey)
     if (connect == nullptr)
     {
         JC_CORE_ERROR("Failed to get connection from pool!");
-        return false;
+        return "";
     }
 
     const char* argv[3];
