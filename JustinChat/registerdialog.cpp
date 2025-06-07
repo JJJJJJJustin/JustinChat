@@ -24,8 +24,6 @@ RegisterDialog::~RegisterDialog()
     delete ui;
 }
 
-
-
 void RegisterDialog::on_get_code_clicked()
 {
     auto emailStr = ui->email_edit->text();
@@ -36,12 +34,59 @@ void RegisterDialog::on_get_code_clicked()
     {
         QJsonObject jsonObj;
         jsonObj["email"] = emailStr;
-        HttpMgr::GetInstance()->PostHttpReq(QUrl(gateUrlPrefix + "/get_varifycode"), jsonObj, ReqID::ID_GET_VERIFY_CODE, Module::REGISTER_MOD);
+        HttpMgr::GetInstance()->PostHttpReq(QUrl(gateUrlPrefix + "/get_verifycode"), jsonObj, ReqID::ID_GET_VERIFY_CODE, Module::REGISTER_MOD);
     }
     else
     {
         ShowTip(tr("邮箱地址不正确"), false);
     }
+}
+
+void RegisterDialog::on_confirm_button_clicked()
+{
+    if(ui->user_edit->text() == "")
+    {
+        ShowTip(tr("用户名不能为空"), false);
+        return;
+    }
+
+    if(ui->email_edit->text() == "")
+    {
+        ShowTip(tr("邮箱不能为空"), false);
+        return;
+    }
+
+    if(ui->pass_edit->text() == "")
+    {
+        ShowTip(tr("密码不能为空"), false);
+        return;
+    }
+
+    if(ui->confirm_edit->text() == "")
+    {
+        ShowTip(tr("确认密码不能为空"), false);
+        return;
+    }
+
+    if(ui->confirm_edit->text() != ui->pass_edit->text())
+    {
+        ShowTip(tr("两次密码不相同，请确认后重新尝试"), false);
+        return;
+    }
+
+    if(ui->verify_edit->text() == "")
+    {
+        ShowTip(tr("验证码不能为空"), false);
+        return;
+    }
+
+    QJsonObject jsonObj;
+    jsonObj["user"] = ui->user_edit->text();
+    jsonObj["email"] = ui->email_edit->text();
+    jsonObj["password"] = ui->pass_edit->text();
+    jsonObj["confirm"] = ui->confirm_edit->text();
+    jsonObj["verifycode"] = ui->verify_edit->text();
+    HttpMgr::GetInstance()->PostHttpReq(QUrl(gateUrlPrefix + "/user_register"), jsonObj, ReqID::ID_REG_USER, Module::REGISTER_MOD);
 }
 
 void RegisterDialog::SlotRegModeFinish(QString res, ReqID reqID, ErrorCode errCode)
@@ -90,6 +135,7 @@ void RegisterDialog::ShowTip(QString str, bool state)
 
 void RegisterDialog::InitHandlersMap()
 {
+    // HttpPOST 请求 -> 一系列信号函数与槽函数 ->  SlotRegModeFinish -> 读取服务器验证码服务的处理结果，并在前端 QT 上作出响应
     m_HandlersMap.insert(ReqID::ID_GET_VERIFY_CODE, [this](QJsonObject jsonObj)
     {
         int error = jsonObj["error"].toInt();
@@ -99,12 +145,26 @@ void RegisterDialog::InitHandlersMap()
             return;
         }
 
+        // 如果 json 中没有 error 信息，则证明验证码发送成功
         QString email = jsonObj["email"].toString();
-
-        // TODO: 发送验证码
-
-        ShowTip(tr("验证码已经发送，注意查收。"), true);
         qDebug() << "email is:" << email << '\n';
+        ShowTip(tr("验证码已经发送，注意查收。"), true);
     });
+
+    // HttpPOST 请求 -> 一系列信号函数与槽函数 ->  SlotRegModeFinish -> 读取服务器注册服务的处理结果，并在前端 QT 上作出响应
+    m_HandlersMap.insert(ReqID::ID_REG_USER, [this](QJsonObject jsonObj)
+    {
+        int error = jsonObj["error"].toInt();
+        if(error != int(ErrorCode::SUCCESS))
+        {
+            ShowTip(tr("参数错误！"), false);
+            return;
+        }
+
+        QString email = jsonObj["email"].toString();
+        qDebug() << "email is:" << email << '\n';
+        ShowTip(tr("用户注册成功！"), true);
+    });
+
 
 }

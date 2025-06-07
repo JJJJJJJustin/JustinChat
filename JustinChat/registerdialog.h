@@ -18,6 +18,8 @@ public:
 
 private slots:
     void on_get_code_clicked();
+    void on_confirm_button_clicked();
+
     void SlotRegModeFinish(QString res, ReqID reqID, ErrorCode errCode);
 
 private:

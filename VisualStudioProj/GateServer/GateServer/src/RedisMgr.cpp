@@ -112,12 +112,12 @@ bool RedisMgr::Get(const std::string& key, std::string& value)
         return false;
     }
     
-    // 如果获取成功，则使用该连接执行 redis 语，并得到 reply
+    // 如果连接获取成功，则执行 redis 语句
     auto reply = (redisReply*)redisCommand(connect, "GET %s", key.c_str());
 
     if (reply == NULL)
     {
-        JC_CORE_ERROR("[ GET {}] failed", key);
+        JC_CORE_ERROR("[ GET {}] failed (reply == NULL), type:{}", key.c_str(), reply->type);
 
         freeReplyObject(reply);
         m_Pool->ReturnConnection(connect);
@@ -126,7 +126,7 @@ bool RedisMgr::Get(const std::string& key, std::string& value)
 
     if (reply->type != REDIS_REPLY_STRING)
     {
-        JC_CORE_ERROR("[ GET {}] failed", key);
+        JC_CORE_ERROR("[ GET {}] failed (reply != REDIS_REPLY_STRING), type:{}", key.c_str(), reply->type);
 
         freeReplyObject(reply);
         m_Pool->ReturnConnection(connect);
@@ -135,6 +135,7 @@ bool RedisMgr::Get(const std::string& key, std::string& value)
 
     JC_CORE_TRACE("Succeed to execute command [ GET {}]", key);
     
+    // 如果查询成功，reply->str 中包含着正常值
     value = reply->str;
     freeReplyObject(reply);
     m_Pool->ReturnConnection(connect);

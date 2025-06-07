@@ -2,6 +2,7 @@
 #include "LogicSystem.h"
 #include "HttpConnection.h"
 #include "VerifyGrpcClient.h"
+#include "RedisMgr.h"
 
 // Constructor is private
 LogicSystem::LogicSystem()
@@ -38,13 +39,13 @@ LogicSystem::LogicSystem()
 	);
 
 	// 这里存储对于客户端 POST 请求的简单处理方法
-	RegPost("/get_varifycode", [](std::shared_ptr<HttpConnection> connection) 
+	RegPost("/get_verifycode", [](std::shared_ptr<HttpConnection> connection) 
 		{
 			Json::Value reqRoot, rspRoot;
 			Json::Reader reader;
 						
 			auto reqData = boost::beast::buffers_to_string(connection->m_Request.body().data());
-			JC_CORE_TRACE("Receive body is \n{}\n", reqData);
+			JC_CORE_INFO("Receive body is \n{}\n", reqData);
 			bool success = reader.parse(reqData, reqRoot);
 			if(!success)
 			{
@@ -66,6 +67,75 @@ LogicSystem::LogicSystem()
 			return true;
 		}
 	);
+
+	RegPost("/user_register", [](std::shared_ptr<HttpConnection> connection) 
+		{
+			Json::Value reqRoot, rspRoot;
+			Json::Reader reader;
+
+			auto reqData = boost::beast::buffers_to_string(connection->m_Request.body().data());
+			JC_CORE_INFO("Receive body id \n {}", reqData);
+			bool success = reader.parse(reqData, reqRoot);
+			if (!success)
+			{
+				JC_CORE_ERROR("Failed to parse JSON data!");
+				rspRoot["error"] = ErrorCodes::Error_Json;
+				boost::beast::ostream(connection->m_Request.body()) << rspRoot.toStyledString();
+
+				return true;
+			}
+
+			auto password = reqRoot["password"].toStyledString();
+			auto confirm = reqRoot["confirm"].toStyledString();
+			if(strcmp(password.c_str(), confirm.c_str()))
+			{
+				JC_CORE_ERROR("Password and confirm are not equal");
+				rspRoot["error"] = ErrorCodes::Error_Password_Incorrect;
+				boost::beast::ostream(connection->m_Request.body()) << rspRoot.toStyledString();
+
+				return true;
+			}
+
+			// 检查验证码是否过期
+			std::string verifyCode;
+			bool getResult = RedisMgr::GetInstance()->Get(reqRoot["email"].asString(), verifyCode);
+			if(!getResult)
+			{
+				JC_CORE_ERROR("Can't find {} in redis database!", reqRoot["email"].toStyledString());
+				rspRoot["error"] = ErrorCodes::Error_Verify_Expired;
+				boost::beast::ostream(connection->m_Response.body()) << rspRoot.toStyledString();
+
+				return true;
+			}
+			// 检查验证码与 redis 数据库中的数据是否匹配
+			if (reqRoot["verifycode"].asString() != verifyCode)
+			{
+				JC_CORE_ERROR("Verify code error!");
+				JC_CORE_ERROR("reqRoot email asString() == {}", reqRoot["email"].asString());
+				JC_CORE_ERROR("verifyCode == {}", verifyCode);
+
+				rspRoot["error"] = ErrorCodes::Error_Verify_Code;
+				boost::beast::ostream(connection->m_Response.body()) << rspRoot.toStyledString();
+
+				return true;
+			}
+
+			// TODO: 使用 mysql 查询用户是否存在
+
+			// 向 qt 发送回包
+			rspRoot["error"] = 0;
+			rspRoot["user"] = reqRoot["user"].toStyledString();
+			rspRoot["email"] = reqRoot["email"].toStyledString();
+			rspRoot["password"] = reqRoot["password"].toStyledString();
+			rspRoot["confirm"] = reqRoot["confirm"].toStyledString();
+			rspRoot["verifycode"] = reqRoot["verifycode"].toStyledString();
+
+			boost::beast::ostream(connection->m_Response.body()) << rspRoot.toStyledString();
+			return true;
+		}
+	);
+
+
 }
 
 LogicSystem::~LogicSystem()
