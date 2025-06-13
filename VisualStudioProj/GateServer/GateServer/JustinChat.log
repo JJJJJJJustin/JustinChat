@@ -1,22 +1,23 @@
-[17:04:14] [info] JstChat: Justin Chat GataServer is running ...
-[17:04:14] [trace] JstChat: Reading config file in: E:\VS\JustinChat\VisualStudioProj\GateServer\GateServer\src/config.ini
-[17:04:14] [info] JstChat: Section Name :GateServer
-[17:04:14] [info] JstChat: 	 Port = 8080
-[17:04:14] [info] JstChat: Section Name :VerifyServer
-[17:04:14] [info] JstChat: 	 Port = 50051
-[17:04:14] [info] JstChat: Justin Chat listening on port : 8080
-
-[17:04:36] [info] JstChat: Receive body is {
-    "email": "3480966311@qq.com"
-}
-
-
-[17:04:37] [info] JstChat: Handling email: 3480966311@qq.com...
-
-[17:11:26] [info] JstChat: Receive body is {
-    "email": "3480966311@qq.com"
-}
-
-
-[17:11:27] [info] JstChat: Handling email: 3480966311@qq.com...
-
+[10:54:22] [info] JstChat: Justin Chat GataServer is running ...
+[10:54:22] [trace] JstChat: Reading config file in: E:\VS\JustinChat\VisualStudioProj\GateServer\GateServer\src/config.ini
+[10:54:22] [trace] JstChat: Section Name :GateServer
+[10:54:22] [trace] JstChat: 	 Port = 8080
+[10:54:22] [trace] JstChat: Section Name :Mysql
+[10:54:22] [trace] JstChat: 	 Host = 81.68.86.146
+[10:54:22] [trace] JstChat: 	 Password = 123456
+[10:54:22] [trace] JstChat: 	 Port = 3380
+[10:54:22] [trace] JstChat: Section Name :MysqlLocalHost
+[10:54:22] [trace] JstChat: 	 Host = 127.0.0.1
+[10:54:22] [trace] JstChat: 	 Password = 123456
+[10:54:22] [trace] JstChat: 	 Port = 3380
+[10:54:22] [trace] JstChat: Section Name :Redis
+[10:54:22] [trace] JstChat: 	 Host = 81.68.86.146
+[10:54:22] [trace] JstChat: 	 Password = 123456
+[10:54:22] [trace] JstChat: 	 Port = 6380
+[10:54:22] [trace] JstChat: Section Name :RedisLocalHost
+[10:54:22] [trace] JstChat: 	 Host = 127.0.0.1
+[10:54:22] [trace] JstChat: 	 Password = 123456
+[10:54:22] [trace] JstChat: 	 Port = 6379
+[10:54:22] [trace] JstChat: Section Name :VerifyServer
+[10:54:22] [trace] JstChat: 	 Host = 127.0.0.1
+[10:54:22] [trace] JstChat: 	 Port = 50051

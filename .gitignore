@@ -23,3 +23,5 @@ VisualStudioProj/GateServer/GateServer/JustinChat.log
 
 #不同步 verifyServer 的模块
 /OtherProj/VerifyServer/node_modules
+/VisualStudioProj/GateServer/GateServer/vendor/mysql_connector/include
+/VisualStudioProj/GateServer/GateServer/vendor/mysql_connector/lib

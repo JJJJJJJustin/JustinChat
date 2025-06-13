@@ -59,7 +59,9 @@ project "GateServer"
         "%{prj.name}/vendor/grpc/third_party/protobuf/src",
         "%{prj.name}/vendor/grpc/third_party/re2",
 
-        "%{prj.name}/vendor/redis/include/hiredis"
+        "%{prj.name}/vendor/redis/include/hiredis",
+
+        "%{prj.name}/vendor/mysql_connector/include"
     }
 
     -- 添加库目录
@@ -103,7 +105,9 @@ project "GateServer"
             "%{prj.name}/vendor/grpc/visual_pro/third_party/protobuf/third_party/utf8_range/Debug",
             "%{prj.name}/vendor/grpc/visual_pro/third_party/zlib/Debug",
 
-            "%{prj.name}/vendor/redis/lib/Debug"
+            "%{prj.name}/vendor/redis/lib/Debug",
+
+            "%{prj.name}/vendor/mysql_connector/lib/debug/vs14"
         }
         
         links       -- Debug 模式下的附加依赖项
@@ -228,7 +232,12 @@ project "GateServer"
             "re2.lib",
 
             "hiredis.lib",
-            "Win32_Interop.lib"
+            "Win32_Interop.lib",
+
+            "mysqlcppconn.lib",
+            "mysqlcppconn-static.lib",
+            "mysqlcppconnx.lib",
+            "mysqlcppconnx-static.lib"
         }
 
         -- buildoptions {
@@ -242,6 +251,15 @@ project "GateServer"
             "%{prj.name}/vendor/Jsoncpp_1_9_6/lib/Release"  -- Release 库路径
         }
         links { "jsoncpp.lib" }  -- Release 库
+
+    -- 添加DLL拷贝命令
+    filter "configurations:Debug"
+        postbuildcommands           --构建项目完成后执行的指令
+        {
+            '{MKDIR} "%{cfg.targetdir}"',
+            '{COPY} "E:/VS/JustinChat/VisualStudioProj/GateServer/GateServer/vendor/mysql_connector/lib/debug/mysqlcppconn-10-vs14.dll" "%{cfg.targetdir}"',
+            '{COPY} "E:/VS/JustinChat/VisualStudioProj/GateServer/GateServer/vendor/mysql_connector/lib/debug/mysqlcppconnx-2-vs14.dll" "%{cfg.targetdir}"'
+        }
 
     -- 运行时库配置
     filter "configurations:Debug"

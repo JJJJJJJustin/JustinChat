@@ -48,3 +48,34 @@ enum ErrorCodes
 };
 
 //#define CODE_PREFIX "code_"
+
+
+// Defer 类实现了类似 RAII 的功能。
+// 比如在使用时，我们先创建一个 Defer 类型对象，然后在初始化构造函数中填入一个 lambda 或者 std::function<>，
+// 一旦声明该 Defer 类型变量的作用域将要终止生命周期，即将要被销毁，该作用域则会自动调用 Defer 的析构函数，
+// 而 Defer 的析构函数会运行我们传入的函数。
+// 
+// eg:
+//	auto conn = std::move(m_Connections.front());
+//	m_Connections.pop();
+//	Defer defer([this, &conn]()
+//		{
+//			m_Connections.push(std::move(conn));
+//		}
+//  );
+//  在这里，一旦存储 defer 的作用域将要被销毁，则会自动调用我们传入的 .push() 函数，实现一些目的。
+class Defer
+{
+public:
+	Defer(std::function<void()> func)
+		:m_Function(func) 
+	{
+	}
+
+	~Defer()
+	{
+		m_Function();
+	}
+private:
+	std::function<void()> m_Function;
+};
