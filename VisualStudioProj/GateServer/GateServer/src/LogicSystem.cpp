@@ -3,6 +3,7 @@
 #include "HttpConnection.h"
 #include "VerifyGrpcClient.h"
 #include "RedisMgr.h"
+#include "MySqlMgr.h"
 
 // Constructor is private
 LogicSystem::LogicSystem()
@@ -82,11 +83,15 @@ LogicSystem::LogicSystem()
 				rspRoot["error"] = ErrorCodes::Error_Json;
 				boost::beast::ostream(connection->m_Request.body()) << rspRoot.toStyledString();
 
-				return true;
+				return true;		// lambda 表达式中的 return true 表示跳出该表达式
 			}
 
+			auto user = reqRoot["user"].toStyledString();
+			auto email = reqRoot["email"].toStyledString();
 			auto password = reqRoot["password"].toStyledString();
 			auto confirm = reqRoot["confirm"].toStyledString();
+			auto verifycode = reqRoot["verifycode"].toStyledString();
+
 			if(strcmp(password.c_str(), confirm.c_str()))
 			{
 				JC_CORE_ERROR("Password and confirm are not equal");
@@ -120,10 +125,22 @@ LogicSystem::LogicSystem()
 				return true;
 			}
 
-			// TODO: 使用 mysql 查询用户是否存在
+			// 使用 mysql 查询用户是否存在
+			int uid = MySqlMgr::GetInstance()->RegUser(user, email, password);
+
+			if (uid == 0 || uid == -1) 
+			{
+				JC_CORE_ERROR("User or email is not exist!");
+
+				rspRoot["error"] = ErrorCodes::Error_User_Exist;
+				boost::beast::ostream(connection->m_Response.body()) << rspRoot.toStyledString();
+
+				return true;
+			}
 
 			// 向 qt 发送回包
 			rspRoot["error"] = 0;
+			rspRoot["uid"] = uid;
 			rspRoot["user"] = reqRoot["user"].toStyledString();
 			rspRoot["email"] = reqRoot["email"].toStyledString();
 			rspRoot["password"] = reqRoot["password"].toStyledString();
