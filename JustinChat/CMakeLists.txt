@@ -34,6 +34,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         singleton.h
         httpmgr.h httpmgr.cpp
         config.ini
+        timerbtn.h timerbtn.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET JustinChat APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
