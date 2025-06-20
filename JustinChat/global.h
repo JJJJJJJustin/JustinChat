@@ -1,20 +1,23 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include <QWidget>
+#include <QByteArray>
+#include <QCryptographicHash>
+#include <QDir>
 #include <QRegularExpression>
-#include <functional>
 #include <QString>
 #include <QSettings>
-#include <QDir>
+#include <QWidget>
+#include <functional>
+#include <iostream>
 #include <memory>
 #include <mutex>
-#include <iostream>
 
 #include "QStyle"
 
 extern QString gateUrlPrefix;
 extern std::function<void(QWidget*)> refresh;
+extern QString MD5Encrypt(const QString&);
 
 // 网络请求标识符
 enum class ReqID
