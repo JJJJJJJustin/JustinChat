@@ -3,9 +3,20 @@
 
 #include "global.h"
 #include <QDialog>
+#include <type_traits>
 
-namespace Ui {
-class RegisterDialog;
+// 这个宏填入的参数必须是 std::function<bool()> 类型的函数名称 ！！！
+#define CHECK_VALID(func){\
+    bool valid = func();\
+    if(!valid)\
+    {\
+        return;\
+    }\
+}
+
+namespace Ui
+{
+    class RegisterDialog;
 }
 
 class RegisterDialog : public QDialog
@@ -25,9 +36,19 @@ private slots:
 private:
     void ShowTip(QString str, bool state);
     void InitHandlersMap();
+
+    void AddErrTip(ErrTipType, QString);
+    void DeleteErrTip(ErrTipType);
+    bool CheckUserValid();
+    bool CheckEmailValid();
+    bool CheckPassValid();
+    bool CheckConfirmValid();
+    bool CheckVerifyValid();
 private:
     Ui::RegisterDialog *ui;
     QMap<ReqID, std::function<void(const QJsonObject&)>> m_HandlersMap;
+
+    QMap<ErrTipType, QString> m_ErrTips;
 };
 
 #endif // REGISTERDIALOG_H

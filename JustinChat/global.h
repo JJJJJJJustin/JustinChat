@@ -42,4 +42,14 @@ enum class ErrorCode
     ERR_NETWORK = 2
 };
 
+enum ErrTipType
+{
+    TIP_SUCCESS = 0,
+    TIP_USER_ERR = 1,
+    TIP_EMAIL_ERR = 2,
+    TIP_PWD_ERR = 3,
+    TIP_PWD_CONFIRM_ERR = 4,        // “确认密码”栏格式错误
+    TIP_CONFIRM_ERR = 5,            // “密码”和“确认密码”不匹配
+    TIP_VERIFY_ERR = 6
+};
 #endif // GLOBAL_H

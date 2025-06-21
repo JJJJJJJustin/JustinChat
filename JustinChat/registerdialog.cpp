@@ -7,13 +7,18 @@ RegisterDialog::RegisterDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // 在 Edit 中输入文字时,内容不可视(通过SetEchoMode函数设置)
-    ui->pass_edit->setEchoMode(QLineEdit::Password);
+    ui->pass_edit->setEchoMode(QLineEdit::Password);    // 在 Edit 中输入文字时,内容不可视(通过SetEchoMode函数设置)
     ui->confirm_edit->setEchoMode(QLineEdit::Password);
 
     ui->err_tip->setProperty("state", "normal");        // 为 ui->err_tip 附加一个 qss 文件中自定义的类型
     refresh(ui->err_tip);                               // 然后刷新 err_tip 这个控件的类型
+    ui->err_tip->clear();                               // 当没有触发任何错误时，不显示 errTip（默认字样也不显示）
 
+    connect(ui->user_edit,  &QLineEdit::editingFinished, this, [this](){ CheckUserValid(); });
+    connect(ui->email_edit, &QLineEdit::editingFinished, this, [this](){ CheckEmailValid(); });
+    connect(ui->pass_edit,  &QLineEdit::editingFinished, this, [this](){ CheckPassValid(); });
+    connect(ui->confirm_edit, &QLineEdit::editingFinished, this, [this](){ CheckConfirmValid(); });
+    connect(ui->verify_edit,  &QLineEdit::editingFinished, this, [this](){ CheckVerifyValid(); });
     connect(HttpMgr::GetInstance().get(), &HttpMgr::SigRegModeFinish, this, &RegisterDialog::SlotRegModeFinish);
 
     InitHandlersMap();
@@ -44,41 +49,11 @@ void RegisterDialog::on_get_code_clicked()
 
 void RegisterDialog::on_confirm_button_clicked()
 {
-    if(ui->user_edit->text() == "")
-    {
-        ShowTip(tr("用户名不能为空"), false);
-        return;
-    }
-
-    if(ui->email_edit->text() == "")
-    {
-        ShowTip(tr("邮箱不能为空"), false);
-        return;
-    }
-
-    if(ui->pass_edit->text() == "")
-    {
-        ShowTip(tr("密码不能为空"), false);
-        return;
-    }
-
-    if(ui->confirm_edit->text() == "")
-    {
-        ShowTip(tr("确认密码不能为空"), false);
-        return;
-    }
-
-    if(ui->confirm_edit->text() != ui->pass_edit->text())
-    {
-        ShowTip(tr("两次密码不相同，请确认后重新尝试"), false);
-        return;
-    }
-
-    if(ui->verify_edit->text() == "")
-    {
-        ShowTip(tr("验证码不能为空"), false);
-        return;
-    }
+    CHECK_VALID(CheckUserValid);
+    CHECK_VALID(CheckEmailValid);
+    CHECK_VALID(CheckPassValid);
+    CHECK_VALID(CheckConfirmValid);
+    CHECK_VALID(CheckVerifyValid);
 
     QJsonObject jsonObj;
     jsonObj["user"] = ui->user_edit->text();
@@ -167,5 +142,92 @@ void RegisterDialog::InitHandlersMap()
         ShowTip(tr("用户注册成功！"), true);
     });
 
+}
 
+void RegisterDialog::AddErrTip(ErrTipType et, QString str)
+{
+    m_ErrTips.insert(et, str);
+    ShowTip(str, false);
+}
+
+void RegisterDialog::DeleteErrTip(ErrTipType et)
+{
+    m_ErrTips.remove(et);
+
+    if(m_ErrTips.empty())
+    {
+        ui->err_tip->clear();
+        return;
+    }
+
+    ShowTip(m_ErrTips.first(), false);          // 删除之后需要更新 ErrTip，在这里更新为 m_ErrTips 的首元素
+}
+
+bool RegisterDialog::CheckUserValid()
+{
+    if(ui->user_edit->text() == "")
+    {
+        AddErrTip(ErrTipType::TIP_USER_ERR, "用户名不能为空!");
+        return false;
+    }
+    DeleteErrTip(ErrTipType::TIP_USER_ERR);
+    return true;
+}
+
+bool RegisterDialog::CheckEmailValid()
+{
+    auto email = ui->email_edit->text();
+    QRegularExpression regex(R"((\w+)(\.|_)?(\w+)@(\w+)(\.(\w+))+)");
+    bool matchResult = regex.match(email).hasMatch();
+    if(!matchResult)
+    {
+        AddErrTip(ErrTipType::TIP_EMAIL_ERR, "请检查邮箱格式!");
+        return false;
+    }
+    DeleteErrTip(ErrTipType::TIP_EMAIL_ERR);
+    return true;
+}
+
+bool RegisterDialog::CheckPassValid()
+{
+    auto pass =ui->pass_edit->text();
+    if(pass.length() < 6 || pass.length() > 15)
+    {
+        AddErrTip(ErrTipType::TIP_PWD_ERR, "密码长度应该在 6~15 之间！");
+        return false;
+    }
+
+    QRegularExpression regex("^[a-zA-Z0-9!@#$%^&*]{6,15}$");
+    bool matchResult = regex.match(pass).hasMatch();
+    if(!matchResult)
+    {
+        AddErrTip(ErrTipType::TIP_PWD_ERR, "密码只能包含数字，字母，以及!@#$%^&*");
+        return false;
+    }
+
+    DeleteErrTip(ErrTipType::TIP_PWD_ERR);
+    return true;
+}
+
+bool RegisterDialog::CheckConfirmValid()
+{
+    if(ui->confirm_edit->text() != ui->pass_edit->text())
+    {
+        AddErrTip(ErrTipType::TIP_CONFIRM_ERR, "前后两次密码不相同!");
+        return false;
+    }
+    DeleteErrTip(ErrTipType::TIP_CONFIRM_ERR);
+    return true;
+}
+
+bool RegisterDialog::CheckVerifyValid()
+{
+    auto verifyCode = ui->verify_edit->text();
+    if(verifyCode.isEmpty())
+    {
+        AddErrTip(ErrTipType::TIP_VERIFY_ERR, "验证码不能为空!");
+        return false;
+    }
+    DeleteErrTip(ErrTipType::TIP_VERIFY_ERR);
+    return true;
 }
